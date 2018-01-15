@@ -2,14 +2,14 @@ import praw
 import time
 from enum import Enum
 
-class TimeInterval(Enum)
+class TimeInterval(Enum):
 	HOUR = 60 * 60
 	DAY = 60 * 60 * 24
 	WEEK = 60 * 60 * 24 * 7
 	MONTH = 60 * 60 * 24 * 30
 	YEAR =  60 * 60 * 24 * 365
 
-class MentionType(Enum)
+class MentionType(Enum):
 	POST = 'post'
 	COMMENT = 'comment'
 	POST_COMMMENT = 'post_comment'
@@ -31,14 +31,19 @@ class CountBot(object):
 
 		return
 
-	def run_count_post_comment(self, subreddits=self.__subs, words=self.__words, mentiontype=MentionType.POST, timeinterval=TimeInterval.DAY):
+	def run_count_post_comment(self, subreddits=None, words=None, mentiontype=MentionType.POST, timeinterval=TimeInterval.DAY):
 		current_timestamp = time.time()
 		word_dict_post = {}
 		word_dict_comments = {}
 		last_timestamp = timeinterval
 
-		subsStr = self.__subseparator.join(subreddits)
-		words = self.__words
+		if (subreddits == None):
+			subsStr = self.__subseparator.join(self.__subs)
+		else:
+			subsStr = self.__subseparator.join(subreddits)
+
+		if (words == None):
+			words = self.__words
 
 		subreddit = self.__reddit.subreddit(subsStr)
 
@@ -52,7 +57,7 @@ class CountBot(object):
 				if(word in submissiontxt):
 					word_dict_post[word] = word_dict_post[word] + 1
 			
-			if('comment' in mentiontype)
+			if('comment' in mentiontype):
 				for comment in submission.comments:
 					commenttxt = comment.body.lower()
 					for word in words:

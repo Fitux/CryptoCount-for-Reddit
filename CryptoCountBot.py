@@ -2,6 +2,7 @@ from CountBot import CountBot, MentionType, TimeInterval
 from coinmarketcap import Market
 import praw
 import time
+import operator
 
 class CryptoCountBot(CountBot):
 	__currencies = {}
@@ -23,7 +24,7 @@ class CryptoCountBot(CountBot):
 
 		return
 
-	def print_cryptos_by_popularity(mentiontype=MentionType.POST, timeinterval=TimenInterval.DAY)
+	def print_cryptos_by_popularity(self, mentiontype=MentionType.POST, timeinterval=TimeInterval.DAY):
 		resultdict = self.run_count_post_comment(mentiontype = mentiontype, timeinterval = timeinterval)
 
 		postdict = resultdict[MentionType.POST]
@@ -31,21 +32,21 @@ class CryptoCountBot(CountBot):
 
 		cryptoresults = {}
 
-		for word in postdict
-			if(word in self.__currencies)
+		for word in postdict:
+			if(word in self.__currencies):
 				cryptoresults[self.__currencies[word]] = cryptoresults.get(self.__currencies[word], 0) + postdict[word]
-			else
+			else:
 				cryptoresults[word] = cryptoresults.get(word, 0) + postdict[word]
 
-		for word in commentdict
-			if(word in self.__currencies)
+		for word in commentdict:
+			if(word in self.__currencies):
 				cryptoresults[self.__currencies[word]] = cryptoresults.get(self.__currencies[word], 0) + commentdict[word]
-			else
+			else:
 				cryptoresults[word] = cryptoresults.get(word, 0) + commentdict[word]
 
-		sortedcryptos = sorted(cryptoresults.items(), key=operator.itemgetter(1))
+		sortedcryptos = sorted(cryptoresults.items(), key=operator.itemgetter(1), reverse=True)
 
-		for crypto in sortedcryptos
-			print(crypto + ": " + str(sortedcryptos[crypto]))
+		for crypto,result in sortedcryptos:
+			print(crypto + ": " + str(result))
 
 		return
